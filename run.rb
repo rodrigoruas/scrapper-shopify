@@ -1,9 +1,5 @@
-require 'thread/pool'
 require 'httparty'
 require 'csv'
-require 'net/http'
-require 'openssl'
-require "open-uri"
 require_relative "methods"
 
 data_file = "part1.csv"

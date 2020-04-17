@@ -19,10 +19,6 @@ def export_to_csv(array,csv_file,headers)
     JSON.parse((open(file_path).read).to_json)
   end
 
-  def read_csv(csv_file)
-    CSV.open(csv_file, headers: :first_row, col_sep: ";").map(&:to_h)
-  end
-
   def get_urls_from_csv(csv_file)
     array = []
     CSV.open(csv_file, headers: :first_row, col_sep: ";").each do |line|

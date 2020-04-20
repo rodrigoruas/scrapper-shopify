@@ -5,6 +5,7 @@ require "open-uri"
 require_relative 'methods'
 require 'nokogiri'
 require 'byebug'
+require 'json'
 
 data_file = "part1.csv"
 
@@ -13,7 +14,8 @@ puts "Open CSV file"
 
 # Write here the interval you want to parse:
 
-parse_with_pool(0,500)
+emails = parse_with_pool(0,300)
 
+export_array_to_json(emails,"emails.json")
 puts "Goodbye!"
 

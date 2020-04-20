@@ -20,10 +20,8 @@ def create_html_file(url)
   end
 end
 
-def find_emails(content, domain, array, url)
-  emails = content.scan(/\b[A-Z0-9._%+-]+@#{domain}[A-Z]{2,4}\b/i).uniq
-  array << {url: url, emails: emails}
-  return !emails.empty?
+def find_emails(content, domain, array)
+  content.scan(/\b[A-Z0-9._%+-]+@#{domain}[A-Z]{2,4}\b/i).uniq
 end
 
 def parse_with_pool(start, finish)
@@ -40,19 +38,27 @@ def parse_with_pool(start, finish)
         if((response.body.include?('lang="fr"')) || (response.body.include?('"contentLanguage"="fr"')))
           french = french + 1
           print 'Allez les bleus!'
-          # file = create_html_file(url)
-          founded = find_emails(response.body, domain, emails_array, url)
-          unless founded
+          founded = find_emails(response.body, domain, emails_array) 
+          unless founded == []
+            emails_array << {
+              url: url,
+              emails: founded
+            }
+          else
             doc = Nokogiri::HTML(response.body)
-            #Get all links in footer
+            emails = []
             doc.css('footer a').each do |fl|
-              # Reject external links
               unless fl['href'].include?('http')
                 response = HTTParty.get(url + fl['href'], timeout: 5)
-                find_emails(response.body, domain, emails_array, url)
+                found = find_emails(response.body, domain, emails_array)
+                emails << found if found != []
               end
             end
-          end
+            emails_array << {
+              url: url,
+              emails: emails.uniq.flatten
+            }
+          end  
         end
         p "Success!"
       rescue => e
@@ -61,9 +67,10 @@ def parse_with_pool(start, finish)
     }  
   end
   pool.shutdown
-  emails = emails_array.uniq
+  emails = emails_array.reject!{|item| item[:emails] == []}
   p "#{(Time.now- start_time).round(2)} seconds"
   p "Number of french websites: #{french}"
+  p "Number of pages with email: #{emails.length}"
   emails
 end
 

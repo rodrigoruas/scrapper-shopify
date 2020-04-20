@@ -12,10 +12,17 @@ data_file = "part1.csv"
 puts "Open CSV file"
 @links = get_urls_from_csv(data_file)
 
+
 # Write here the interval you want to parse:
+start_index = 0
+end_index = 500
 
-emails = parse_with_pool(0,300)
 
-export_array_to_json(emails,"emails.json")
+headers = %w(url emails)
+emails = parse_with_pool(start_index, end_index)
+
+export_array_to_json(emails,"emails/emails-#{start_index}-#{end_index}.json")
+export_to_csv(emails,"emails/emails-#{start_index}-#{end_index}.csv",headers)
+
 puts "Goodbye!"
 

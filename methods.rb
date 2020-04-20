@@ -13,6 +13,15 @@ def export_array_to_json(array,json_file)
   end
 end
 
+def export_to_csv(array,csv_file,headers)
+  CSV.open(csv_file, "w",
+          :write_headers=> true,
+          :headers => headers) do |csv|
+    array.each do |hash|
+      csv << [hash.values.first, hash.values.last.join(",")]
+    end
+  end
+end
 
 def find_emails(content, domain, array)
   content.scan(/\b[A-Z0-9._%+-]+@#{domain}[A-Z]{2,4}\b/i).uniq
@@ -64,6 +73,11 @@ def parse_with_pool(start, finish)
   emails = emails_array.reject!{|item| item[:emails] == []}
   p "#{(Time.now- start_time).round(2)} seconds"
   p "Number of french websites: #{french}"
-  p "Number of pages with email: #{emails.length}"
-  emails
+  unless emails.nil?
+    p "Number of pages with email: #{emails.length}"
+    emails
+  else
+    p  "No email found"
+    []
+  end
 end

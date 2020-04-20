@@ -14,12 +14,6 @@ def export_array_to_json(array,json_file)
 end
 
 
-def create_html_file(url)
-  open("french_websites/#{url.split("/").last}.html", 'wb') do |file|
-    file << open(url).read
-  end
-end
-
 def find_emails(content, domain, array)
   content.scan(/\b[A-Z0-9._%+-]+@#{domain}[A-Z]{2,4}\b/i).uniq
 end
@@ -51,7 +45,7 @@ def parse_with_pool(start, finish)
               unless fl['href'].include?('http')
                 response = HTTParty.get(url + fl['href'], timeout: 5)
                 found = find_emails(response.body, domain, emails_array)
-                emails << found if found != []
+                emails << found unless found == []
               end
             end
             emails_array << {
@@ -72,24 +66,4 @@ def parse_with_pool(start, finish)
   p "Number of french websites: #{french}"
   p "Number of pages with email: #{emails.length}"
   emails
-end
-
-def parse_without_pool(start, finish)
-  start_time = Time.now
-  @links[start..finish].each_with_index do |link, index|
-    p "======================================================"
-    p "parsing: #{index}"
-    url = "http://#{link}"
-    begin
-      response = HTTParty.get(url)
-      if((response.body.include?('lang="fr"')) || (response.body.include?('"contentLanguage"="fr"')))
-        print 'Allez les bleus!'
-        create_html_file(url)
-      end
-      p "Success!"
-    rescue => e
-      p e
-    end
-  end
-  p "#{(Time.now- start_time).round(2)} seconds"
 end

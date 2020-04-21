@@ -25,6 +25,14 @@ end_index = 500
 
 ```
 
+If for some reason, you are being blocked, you can slow down the speed of search in methods.rb file. 
+Change the number between 100 and 500.
+
+```
+pool = Thread.pool(200)
+
+```
+
 And run :
 
 ```

@@ -14,8 +14,8 @@ puts "Open CSV file"
 
 
 # Write here the interval you want to parse:
-start_index = 0
-end_index = 500
+start_index = 1000
+end_index = 1500
 
 
 headers = %w(url emails)

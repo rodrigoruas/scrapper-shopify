@@ -29,7 +29,7 @@ end
 
 def parse_with_pool(start, finish)
   emails_array = []
-  pool = Thread.pool(500)
+  pool = Thread.pool(200)
   start_time = Time.now
   french = 0
   @links[start..finish].each_with_index do |link, index|
@@ -41,7 +41,7 @@ def parse_with_pool(start, finish)
         if((response.body.include?('lang="fr"')) || (response.body.include?('"contentLanguage"="fr"')))
           french = french + 1
           print 'Allez les bleus!'
-          founded = find_emails(response.body, domain, emails_array) 
+          founded = find_emails(response.body, domain, emails_array)
           unless founded == []
             emails_array << {
               url: url,
@@ -61,13 +61,13 @@ def parse_with_pool(start, finish)
               url: url,
               emails: emails.uniq.flatten
             }
-          end  
+          end
         end
         p "Success!"
       rescue => e
         p e
       end
-    }  
+    }
   end
   pool.shutdown
   emails = emails_array.reject!{|item| item[:emails] == []}

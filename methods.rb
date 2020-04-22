@@ -70,12 +70,12 @@ def parse_with_pool(start, finish)
     }
   end
   pool.shutdown
-  emails = emails_array.reject!{|item| item[:emails] == []}
+  # emails = emails_array.reject!{|item| item[:emails] == []}
   p "#{(Time.now- start_time).round(2)} seconds"
   p "Number of french websites: #{french}"
-  unless emails.nil?
-    p "Number of pages with email: #{emails.length}"
-    emails
+  unless emails_array.nil?
+    p "Number of pages with email: #{emails_array.reject{|item| item[:emails] == []}.length}"
+    emails_array
   else
     p  "No email found"
     []
